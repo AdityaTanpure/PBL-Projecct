@@ -1,0 +1,30 @@
+Exp 9 
+clear; 
+clf; 
+data = sign(randn(1, 400)); % generate 400 random bits 
+Tau = 64; 
+dataup = upsample(data, Tau); % generate impulse train 
+yrz = conv(dataup, ones(1, Tau)); % Use conv with ones to 
+generate a rectangular pulse 
+yrz = yrz(1:length(data)); % Trim the convolution result 
+to match the length of the original data 
+ynrz = dataup; % For NRZ, no need for convolution 
+ysine = sin(2 * pi * (1:length(dataup)) / Tau); % Generate 
+a half-sine wave for sine modulation 
+ysine = ysine(1:length(data)); % Trim the sine wave to 
+match the length of the original data 
+Td = 4; 
+h = rcosdesign(0.5, Td, Tau, 'sqrt'); % Design a square
+root raised cosine filter 
+yrcos = conv(dataup, h); % Convolve with the raised cosine 
+filter 
+yrcos = yrcos(Tau + 1:end - Tau); % Trim the convolution 
+result 
+eye1 = eyediagram(yrz, 2 * Tau, Tau, Tau / 2); 
+title('RZ eye diagram'); 
+eye2 = eyediagram(ynrz, 2 * Tau, Tau, Tau / 2); 
+title('NRZ eye diagram'); 
+eye3 = eyediagram(ysine, 2 * Tau, Tau, Tau / 2); 
+title('HALF SINE eye diagram'); 
+eye4 = eyediagram(yrcos, 2 * Tau, Tau, Tau / 2); 
+title('COSINE eye diagram');
